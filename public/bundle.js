@@ -19668,21 +19668,47 @@
 	var ReactDOM = __webpack_require__(158);
 	var Table = __webpack_require__(160);
 
+	function getURL(url, callback) {
+	  var req = new XMLHttpRequest();
+	  req.open("GET", url, true);
+	  req.addEventListener("load", function () {
+	    if (req.status < 400) callback(req.responseText);else callback(null, new Error("Request failed: " + req.statusText));
+	  });
+	  req.addEventListener("error", function () {
+	    callback(null, new Error("Network error"));
+	  });
+	  req.send(null);
+	}
+
 	var APP = React.createClass({
-	    displayName: 'APP',
+	  displayName: 'APP',
 
-
-	    render() {
-	        return React.createElement(
-	            'div',
-	            null,
-	            React.createElement(
-	                'div',
-	                null,
-	                React.createElement(Table, null)
-	            )
-	        );
-	    }
+	  getInitialState: function () {
+	    return {
+	      books: []
+	    };
+	  },
+	  componentWillMount: function () {
+	    _this = this;
+	    getURL("http://localhost:3000/api/books.json", function (content, error) {
+	      if (error != null) console.warn("Failed to fetch nonsense.txt: " + error);else var parsed_content = JSON.parse(content);
+	      _this.setState({
+	        books: parsed_content
+	      });
+	      console.log(parsed_content);
+	    });
+	  },
+	  render() {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(Table, { data: this.state.books })
+	      )
+	    );
+	  }
 	});
 
 	module.exports = APP;
@@ -19693,18 +19719,6 @@
 
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(158);
-
-	function getURL(url, callback) {
-	    var req = new XMLHttpRequest();
-	    req.open("GET", url, true);
-	    req.addEventListener("load", function () {
-	        if (req.status < 400) callback(req.responseText);else callback(null, new Error("Request failed: " + req.statusText));
-	    });
-	    req.addEventListener("error", function () {
-	        callback(null, new Error("Network error"));
-	    });
-	    req.send(null);
-	}
 
 	var Row = React.createClass({
 	    displayName: 'Row',
@@ -19753,22 +19767,6 @@
 	var Table = React.createClass({
 	    displayName: 'Table',
 
-	    getInitialState: function () {
-	        return {
-	            books: []
-	        };
-	    },
-	    componentWillMount: function () {
-	        _this = this;
-	        getURL("http://localhost:3000/api/books.json", function (content, error) {
-	            if (error != null) console.warn("Failed to fetch nonsense.txt: " + error);else var parsed_content = JSON.parse(content);
-	            _this.setState({
-	                books: parsed_content
-	            });
-	            console.log(parsed_content);
-	        });
-	    },
-
 	    render() {
 	        return React.createElement(
 	            'table',
@@ -19791,7 +19789,7 @@
 	                    )
 	                )
 	            ),
-	            React.createElement(Tbody, { data: this.state.books })
+	            React.createElement(Tbody, { data: this.props.data })
 	        );
 	    }
 	});
