@@ -1,6 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Table = require('./parts/Table');
+var Chart = require('./parts/Chart');
 
 function getURL(url, callback) {
   var req = new XMLHttpRequest();
@@ -19,12 +20,7 @@ function getURL(url, callback) {
 }
 
 var APP = React.createClass({
-    getInitialState: function() {
-    return { 
-      books: []
-     };
-    },
-    componentWillMount: function() {
+    loadDataFromServer: function() {    
     _this = this;
     getURL("http://localhost:3000/api/books.json", function(content, error) {
     if (error != null)
@@ -32,14 +28,33 @@ var APP = React.createClass({
     else
       var parsed_content = JSON.parse(content);
       _this.setState({
-        books: parsed_content
+        books: parsed_content,
+        ajax: "loaded"
       });
       console.log(parsed_content);
     });
+  },
+    getInitialState: function() {
+    return { 
+      books: [], 
+      ajax: "loading..."
+     };
+    },
+    componentDidMount: function() {
+    this.loadDataFromServer();
+    console.log("goodbye world");
+    },
+    componentWillUnmount: function() {
+      this.serverRequest.abort();
     },
     render() {
+      console.log(this.state);
         return (
             <div>
+                <div>
+                    <Chart data={this.state.books} ajax={this.state.ajax} />
+                </div>
+
                 <div>
                     <Table data={this.state.books} />
                 </div>
