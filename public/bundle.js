@@ -19884,6 +19884,7 @@
 			console.log(count);
 			console.warn('this is zipped');
 			console.log(zip);
+			return zip;
 			// console.log(zipped);
 			// return zipped;
 		}
@@ -19922,9 +19923,9 @@
 	}
 
 	function createBar(data, target, ajax) {
-		var zip = formatBarData(data, ajax);
-		console.log("zip!");
-		console.warn(zip);
+		var formattedData = formatBarData(data, ajax);
+		console.log("formatted data:");
+		console.warn(formattedData);
 		var margin = { top: 20, right: 20, bottom: 30, left: 40 },
 		    width = 960 - margin.left - margin.right,
 		    height = 500 - margin.top - margin.bottom;
@@ -19939,8 +19940,24 @@
 
 		var svg = d3.select("#bar").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		// see for reference: https://bl.ocks.org/mbostock/3885304
-		// x.domain(data.map(function(d) { return zip.letter; }));
-		//    y.domain([0, d3.max(data, function(d) { return zip.; })]);
+		x.domain(formattedData.map(function (d) {
+			return d.title;
+		}));
+		y.domain([0, d3.max(formattedData, function (d) {
+			return d.count;
+		})]);
+
+		svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
+
+		svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("Count");
+
+		svg.selectAll(".bar").data(formattedData).enter().append("rect").attr("class", "bar").attr("x", function (d) {
+			return x(d.title);
+		}).attr("width", x.rangeBand()).attr("y", function (d) {
+			return y(d.count);
+		}).attr("height", function (d) {
+			return height - y(d.count);
+		});
 	}
 
 	var Table = React.createClass({
@@ -19963,8 +19980,11 @@
 		render() {
 			var data = this.props.data;
 			var ajax = this.props.ajax;
+
 			console.log(this.props.ajax);
-			createBar(data, "#bar", ajax);
+			if (ajax != "loading...") {
+				createBar(data, "#bar", ajax);
+			}
 			return React.createElement('svg', { id: 'bar' });
 		}
 	});
