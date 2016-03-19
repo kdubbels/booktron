@@ -38,15 +38,24 @@ function formatBarData(incdata, ajax) {
 		}
 		for (var i = 0; i < data.length; i++) {
 		    var position = titles.indexOf(data[i].title.genres[0].name);
-		    // console.log(position);
 		    count[position] = count[position] + 1;
 		}
 
-		var zipped = _.object(titles, count);
-		console.log(data);
+		// var zipped = _.object(titles, count);
+		var zip = [];
+		for (var i = 0; i < titles.length; i++) {
+			var obj = {};
+			obj.count = count[i];
+			obj.title = titles[i];
+			zip.push(obj);
+		}
+
 		console.log(titles);
 		console.log(count);
-		console.log(zipped);
+		console.warn('this is zipped');
+		console.log(zip);
+		// console.log(zipped);
+		// return zipped;
 	}
 
 }
@@ -93,8 +102,9 @@ function createSpreadsheet(data){
 }
 
 function createBar(data, target, ajax) {
-	formatBarData(data, ajax);
-
+	var zip = formatBarData(data, ajax);
+	console.log("zip!");
+console.warn(zip);
 	var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -119,6 +129,9 @@ function createBar(data, target, ajax) {
 	    .attr("height", height + margin.top + margin.bottom)
 	  .append("g")
 	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+// see for reference: https://bl.ocks.org/mbostock/3885304
+	// x.domain(data.map(function(d) { return zip.letter; }));
+ //    y.domain([0, d3.max(data, function(d) { return zip.; })]);
 }
 
 
