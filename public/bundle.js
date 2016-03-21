@@ -19832,6 +19832,24 @@
 	var d3 = __webpack_require__(162);
 	var _ = __webpack_require__(163);
 
+	function hover(hoverD) {
+		var nestArray = hoverD.genre || [];
+		// d3.selectAll("circle").filter(function (d) {return d == hoverD}).style("fill", "#94B8FF");
+		d3.selectAll("rect").filter(function (d) {
+			return d == hoverD || d.genre.indexOf(hoverD) > -1;
+		}).style("stroke", "#fff").style("fill", "#fff");
+		// d3.selectAll("div.datarow")
+		// .filter(function (d) {console.warn(d); return d == hoverD || nestArray.indexOf(d) > -1})
+		// .filter(function (d) {console.warn(d.title.genres[0].name); return d == hoverD || d.title.genres[0].name.indexOf(hoverD) > -1})
+		// .style("background", "steelblue");
+	}
+
+	function mouseOut() {
+		// d3.selectAll("circle").style("fill", function(d) {return depthScale(d.depth)});
+		d3.selectAll("rect").style("stroke", "#fff").style("fill", "#fb887c");
+		d3.selectAll("div.datarow").style("stroke", "#fff").style("background", "#fb887c");
+	}
+
 	function add(data) {
 		if (this.dataStore.indexOf(data) < 0) {
 			this.dataStore.push(data);
@@ -19861,25 +19879,25 @@
 			}
 			console.log(set);
 			var count = [];
-			var titles = [];
+			var genres = [];
 			for (var i = 0; i < set.dataStore.length; i++) {
-				titles.push(set.dataStore[i]);
+				genres.push(set.dataStore[i]);
 				count.push(0);
 			}
 			for (var i = 0; i < data.length; i++) {
-				var position = titles.indexOf(data[i].title.genres[0].name);
+				var position = genres.indexOf(data[i].title.genres[0].name);
 				count[position] = count[position] + 1;
 			}
 
 			var book_data_array = []; //final format of book colleciton for display as bar chart
-			for (var i = 0; i < titles.length; i++) {
+			for (var i = 0; i < genres.length; i++) {
 				var obj = {};
 				obj.count = count[i];
-				obj.title = titles[i];
+				obj.genre = genres[i];
 				book_data_array.push(obj);
 			}
 
-			console.log(titles);
+			console.log(genres);
 			console.log(count);
 			console.warn('this is book_data_arrayped');
 			console.log(book_data_array);
@@ -19904,6 +19922,7 @@
 		}).enter().append("div").attr("class", "datarow row").style("top", function (d, i) {
 			return 40 + i * 40 + "px";
 		});
+		// THIS MIGHT NOT WORK
 		// .on("mouseover", hover)
 		// .on("mouseout", mouseOut);
 
@@ -19921,10 +19940,8 @@
 
 	function createBar(data, target, ajax) {
 		var formattedData = formatBarData(data, ajax);
-		var data = _.sortBy(formattedData, 'title');
+		var data = _.sortBy(formattedData, 'genre');
 
-		console.log("formatted data:");
-		console.warn(formattedData);
 		var margin = { top: 30, right: 20, bottom: 100, left: 40 },
 		    width = 960 - margin.left - margin.right,
 		    height = 600 - margin.top - margin.bottom;
@@ -19940,7 +19957,7 @@
 		var svg = d3.select("#bar").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		// see for reference: https://bl.ocks.org/mbostock/3885304
 		x.domain(data.map(function (d) {
-			return d.title;
+			return d.genre;
 		}));
 		y.domain([0, d3.max(data, function (d) {
 			return d.count;
@@ -19951,12 +19968,12 @@
 		svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("Count");
 
 		svg.selectAll(".bar").data(data).enter().append("rect").attr("class", "bar").attr("x", function (d) {
-			return x(d.title);
+			return x(d.genre);
 		}).attr("width", x.rangeBand()).attr("y", function (d) {
 			return y(d.count);
 		}).attr("height", function (d) {
 			return height - y(d.count);
-		});
+		}).on("mouseover", hover).on("mouseout", mouseOut);
 	}
 
 	var Table = React.createClass({
