@@ -19843,7 +19843,7 @@
 		// .filter(function (d) {console.warn(d); return d == hoverD || nestArray.indexOf(d) > -1})
 		.filter(function (d) {
 			return d.genre != hoverD.genre ? d : "";
-		}).style("border", "white");
+		}).style("background", "white");
 	}
 
 	function mouseOut() {
@@ -19925,23 +19925,21 @@
 		var incData = formatSpreadsheetData(incomingData);
 		var keyValues = ["titles", "authors"];
 
-		d3.select("#spreadsheet").append("div").attr("class", "table");
-
-		d3.select("div.table").append("div").attr("class", "head row").selectAll("div.data").data(keyValues).enter().append("div").attr("class", "data").html(function (d) {
+		d3.select("#spreadsheet").append("tr").attr("class", "head row").selectAll("div.data").data(keyValues).enter().append("th").attr("class", "data").html(function (d) {
 			return d;
 		}).style("left", function (d, i) {
 			return i * 100 + "px";
 		});
 
-		d3.select("div.table").selectAll("div.datarow").data(incData, function (d) {
+		d3.select("#spreadsheet").selectAll("tr.datarow").data(incData, function (d) {
 			return d.id;
-		}).enter().append("div").attr("class", "datarow row").style("top", function (d, i) {
+		}).enter().append("tr").attr("class", "datarow row").style("top", function (d, i) {
 			return 40 + i * 40 + "px";
 		}).on("mouseover", hover).on("mouseout", mouseOut);
 
-		d3.selectAll("div.datarow").selectAll("div.data").data(function (d) {
+		d3.selectAll("tr.datarow").selectAll("td.data").data(function (d) {
 			return d3.entries(d);
-		}).enter().append("div").attr("class", "data")
+		}).enter().append("td").attr("class", "data")
 		// .html(function (d, i) {console.warn(d); return d.value })
 		// .html(function (d, i) {console.warn(d); return typeof d.value === 'object' ? "foo" : d.value })
 		.html(function (d, i) {
@@ -19996,8 +19994,8 @@
 			var data = this.props.data;
 			createSpreadsheet(data);
 			return React.createElement(
-				'div',
-				{ id: 'spreadsheet' },
+				'table',
+				{ id: 'spreadsheet', className: 'table' },
 				'Something'
 			);
 		}
@@ -20018,22 +20016,6 @@
 		}
 	});
 
-	var Layout = React.createClass({
-		displayName: 'Layout',
-
-		render() {
-			var foo = "bar";
-			// console.log(this.props.data);
-			// console.warn("fffff");
-			var piechart = d3.layout.pie();
-			var data = this.props.data;
-			// console.warn(data);
-			// console.warn("foo")
-			//console.warn(mypie);
-			return React.createElement('div', null);
-		}
-	});
-
 	var Chart = React.createClass({
 		displayName: 'Chart',
 
@@ -20042,8 +20024,7 @@
 				'div',
 				null,
 				React.createElement(Bar, { data: this.props.data, ajax: this.props.ajax }),
-				React.createElement(Table, { data: this.props.data, ajax: this.props.ajax }),
-				React.createElement(Layout, null)
+				React.createElement(Table, { data: this.props.data, ajax: this.props.ajax })
 			);
 		}
 	});

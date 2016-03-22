@@ -13,7 +13,7 @@ function hover(hoverD) {
 	d3.selectAll("div.datarow")
 	    // .filter(function (d) {console.warn(d); return d == hoverD || nestArray.indexOf(d) > -1})
 	    .filter(function (d) { return d.genre != hoverD.genre ? d : "" })
-	    .style("border", "white");
+	    .style("background", "white");
 }
 
 function mouseOut() {
@@ -99,41 +99,36 @@ function createSpreadsheet(data){
 	var incData = formatSpreadsheetData(incomingData);
 	var keyValues = ["titles", "authors"];
 
-		d3.select("#spreadsheet")
-		    .append("div")
-	        .attr("class", "table");
+    d3.select("#spreadsheet")
+        .append("tr")
+        .attr("class", "head row")
+        .selectAll("div.data")
+        .data(keyValues)
+      .enter()
+        .append("th")
+        .attr("class", "data")
+        .html(function (d) {return d})
+        .style("left", function(d,i) {return (i * 100) + "px";});
 
-        d3.select("div.table")
-            .append("div")
-            .attr("class", "head row")
-            .selectAll("div.data")
-            .data(keyValues)
-          .enter()
-            .append("div")
-            .attr("class", "data")
-            .html(function (d) {return d})
-            .style("left", function(d,i) {return (i * 100) + "px";});
-
-        d3.select("div.table")
-	         .selectAll("div.datarow")
-	         .data(incData, function(d) {return d.id})
-	      .enter()
-	        .append("div")
-	        .attr("class", "datarow row")
-	        .style("top", function(d,i) {return (40 + (i * 40)) + "px"})
-	        .on("mouseover", hover)
-	        .on("mouseout", mouseOut);
-        
-        d3.selectAll("div.datarow")
-            .selectAll("div.data")
-            .data(function(d) {return d3.entries(d) })
-          .enter()
-            .append("div")
-            .attr("class", "data")
-        // .html(function (d, i) {console.warn(d); return d.value })
-        // .html(function (d, i) {console.warn(d); return typeof d.value === 'object' ? "foo" : d.value })
+    d3.select("#spreadsheet")
+         .selectAll("tr.datarow")
+         .data(incData, function(d) {return d.id})
+      .enter()
+        .append("tr")
+        .attr("class", "datarow row")
+        .style("top", function(d,i) {return (40 + (i * 40)) + "px"})
+        .on("mouseover", hover)
+        .on("mouseout", mouseOut);
+    
+    d3.selectAll("tr.datarow")
+        .selectAll("td.data")
+        .data(function(d) {return d3.entries(d) })
+      .enter()
+        .append("td")
+        .attr("class", "data")
+    // .html(function (d, i) {console.warn(d); return d.value })
+    // .html(function (d, i) {console.warn(d); return typeof d.value === 'object' ? "foo" : d.value })
         .html(function (d, i) { return typeof d.value === 'object' ? d.value.title != undefined ? d.value.title : d.value.last != undefined ? d.value.first + " " + d.value.last : d.value : d.value })
-
         .style("left", function(d,i,j) {return (i * 100) + "px"});
 }
 
@@ -167,77 +162,62 @@ function createBar(data, target, ajax) {
 	  .append("g")
 	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 // see for reference: https://bl.ocks.org/mbostock/3885304
-	   x.domain(data.map(function(d) { return d.genre; }));
-       y.domain([0, d3.max(data, function(d) { return d.count; })]);
+    x.domain(data.map(function(d) { return d.genre; }));
+    y.domain([0, d3.max(data, function(d) { return d.count; })]);
 
-       svg.append("g")
-	      .attr("class", "x axis")
-	      .attr("transform", "translate(5," + (height+5) + ")")
-	      .call(xAxis)
-	    .selectAll("text")
-	      .attr("transform", "rotate(45)")
-	      .style("text-anchor", "start");
+    svg.append("g")
+       .attr("class", "x axis")
+       .attr("transform", "translate(5," + (height+5) + ")")
+       .call(xAxis)
+     .selectAll("text")
+       .attr("transform", "rotate(45)")
+       .style("text-anchor", "start");
 
-	  svg.append("g")
-	      .attr("class", "y axis")
-	      .call(yAxis)
-	    .append("text")
-	      .attr("transform", "rotate(-90)")
-	      .attr("y", 6)
-	      .attr("dy", ".71em")
-	      .style("text-anchor", "end")
-	      .text("Count");
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Count");
 
-	  svg.selectAll(".bar")
-	      .data(data)
-	    .enter().append("rect")
-	      .attr("class", "bar")
-	      .attr("x", function(d) { return x(d.genre); })
-	      .attr("width", x.rangeBand())
-	      .attr("y", function(d) { return y(d.count); })
-	      .attr("height", function(d) { return height - y(d.count); })
-	      .on("mouseover", hover)
-	      .on("mouseout", mouseOut);
+    svg.selectAll(".bar")
+        .data(data)
+      .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.genre); })
+        .attr("width", x.rangeBand())
+        .attr("y", function(d) { return y(d.count); })
+        .attr("height", function(d) { return height - y(d.count); })
+        .on("mouseover", hover)
+        .on("mouseout", mouseOut);
 }
 
-
 var Table = React.createClass({
-render() {
-	var data = this.props.data;
-	createSpreadsheet(data);
-        return (
-            <div id="spreadsheet">Something</div>
-        );
-    }
+	render() {
+		var data = this.props.data;
+		createSpreadsheet(data);
+	        return (
+	            <table id="spreadsheet" className="table">Something</table>
+	        );
+	    }
 });
 
 var Bar = React.createClass({
-render() {
-	var data = this.props.data;
-	var ajax = this.props.ajax;
-
-	console.log(this.props.ajax);
-    if (ajax != "loading...") {
-	    createBar(data, "#bar", ajax);
-	}
-        return (
-            <svg id="bar"></svg>
-        );
-    }
-});
-
-var Layout = React.createClass({
 	render() {
-		var foo = "bar";
-		// console.log(this.props.data);
-		// console.warn("fffff");
-		var piechart = d3.layout.pie();
 		var data = this.props.data;
-		// console.warn(data);
-		// console.warn("foo")
-		//console.warn(mypie);
-		return <div></div>
-	}
+		var ajax = this.props.ajax;
+
+		console.log(this.props.ajax);
+	    if (ajax != "loading...") {
+		    createBar(data, "#bar", ajax);
+		}
+	        return (
+	            <svg id="bar"></svg>
+	        );
+	    }
 });
 
 var Chart = React.createClass({
@@ -249,7 +229,6 @@ var Chart = React.createClass({
 			
 			<Table data={this.props.data} ajax={this.props.ajax} />
 
-			<Layout />
 			</div>
 		);
 	}
