@@ -31,9 +31,11 @@ function formatSpreadsheetData(incdata) {
 	    for (var i = 0; i < incdata.length; i++) {
 	    	// console.warn(incdata[i].title.genres[0].name);
 	    	incdata[i].genre = incdata[i].title.genres[0].name;
+	    	incdata[i].lastname = incdata[i].author.last;
 	    }
 	    // console.log(incdata);
-	    return incdata;
+
+	    return _.sortBy(incdata, 'lastname');
     } else {
     	return incdata;
     }
@@ -67,7 +69,7 @@ function createSpreadsheet(data){
     
     d3.selectAll("tr.datarow")
         .selectAll("td.data")
-        .data(function(d) {console.log(d); console.warn(d3.entries(_.omit(d, 'id'))); return d3.entries(_.omit(d, 'id')) })
+        .data(function(d) {console.log(d); console.warn(d3.entries(_.omit(_.omit(d, 'id'), 'lastname'))); return d3.entries(_.omit(_.omit(d, 'id'), 'lastname')) })
       .enter()
         .append("td")
         .attr("class", "data")

@@ -1,5 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+var d3 = require('d3');
+var _ = require('underscore');
 
 var Row = React.createClass({  
     render() {
@@ -26,14 +28,15 @@ var Tbody = React.createClass({
 })
 
 var Table = React.createClass({
-    render() {
-        return (
-            <table>
-                <thead><tr><th>Author</th><th>Title</th><th>Genre</th></tr></thead>
-                <Tbody data={this.props.data} />
-            </table>
-        );
-    }
-})
+	render() {
+		return(
+			<table>
 
-module.exports = Table;
+			<Tbody data={this.props.data} ajax={this.props.ajax} />
+
+			</table>
+		);
+	}
+});
+
+module.exports = Table;	

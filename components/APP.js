@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Table = require('./parts/Table');
-var Chart = require('./parts/Chart');
+var BarChart = require('./parts/BarChart');
 var Spreadsheet = require('./parts/Spreadsheet')
 
 function getURL(url, callback) {
@@ -54,11 +54,11 @@ var APP = React.createClass({
         return (
             <div>
                 <div>
-                    <Chart data={this.state.books} ajax={this.state.ajax} />
+                    <BarChart data={this.state.books} ajax={this.state.ajax} />
                 </div>
 
                 <div>
-                    <Spreadsheet data={this.state.books} ajax={this.state.ajax} />
+                    
                 </div>
 
             </div>

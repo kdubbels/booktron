@@ -2,6 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var d3 = require('d3');
 var _ = require('underscore');
+var Table = require('./Table');
 
 function hover(hoverD) {
 	var nestArray = hoverD || [];
@@ -159,18 +160,18 @@ var Bar = React.createClass({
 	    }
 });
 
-var Chart = React.createClass({
+var BarChart = React.createClass({
 	render() {
 		return(
 			<div>
 
 			<Bar data={this.props.data} ajax={this.props.ajax} />
-			
+			<Table data={this.props.data} ajax={this.props.ajax} />
 			</div>
 		);
 	}
 });
 
-module.exports = Chart;	
+module.exports = BarChart;	
 
 
