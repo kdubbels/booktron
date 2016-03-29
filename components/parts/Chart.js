@@ -44,15 +44,15 @@ function formatBarData(incdata, ajax) {
 	'use strict';
 	var data = incdata.books;
 	var loading = ajax;
-	console.warn("loading status is: ");
-	console.log(ajax);
+	// console.warn("loading status is: ");
+	// console.log(ajax);
 
 	if (loading != "loading...") {
 		var set = new Set();
 		for (var i = 0; i < data.length; i++) {
 			set.add(data[i].title != undefined ? data[i].title.genres[0].name : "");
 		}
-		console.log(set);
+		// console.log(set);
 		var count = [];
 		var genres = [];
 		for (var i = 0; i < set.dataStore.length; i++) {
@@ -72,64 +72,13 @@ function formatBarData(incdata, ajax) {
 			book_data_array.push(obj);
 		}
 
-		console.log(genres);
-		console.log(count);
-		console.warn('this is book_data_arrayped');
-		console.log(book_data_array);
+		// console.log(genres);
+		// console.log(count);
+		// console.warn('this is book_data_arrayped');
+		// console.log(book_data_array);
 		return book_data_array;
 	}
 
-}
-
-function formatSpreadsheetData(incdata) {
-    if(incdata != undefined) {
-	    for (var i = 0; i < incdata.length; i++) {
-	    	// console.warn(incdata[i].title.genres[0].name);
-	    	incdata[i].genre = incdata[i].title.genres[0].name;
-	    }
-	    console.log(incdata);
-	    return incdata;
-    } else {
-    	return incdata;
-    }
-}
-
-function createSpreadsheet(data){
-	var incomingData = data.books;
-	var incData = formatSpreadsheetData(incomingData);
-	var keyValues = ["titles", "authors"];
-
-    d3.select("#spreadsheet")
-        .append("tr")
-        .attr("class", "head row")
-        .selectAll("div.data")
-        .data(keyValues)
-      .enter()
-        .append("th")
-        .attr("class", "data")
-        .html(function (d) {return d})
-        .style("left", function(d,i) {return (i * 100) + "px";});
-
-    d3.select("#spreadsheet")
-         .selectAll("tr.datarow")
-         .data(incData, function(d) {return d.id})
-      .enter()
-        .append("tr")
-        .attr("class", "datarow row")
-        .style("top", function(d,i) {return (40 + (i * 40)) + "px"})
-        .on("mouseover", hover)
-        .on("mouseout", mouseOut);
-    
-    d3.selectAll("tr.datarow")
-        .selectAll("td.data")
-        .data(function(d) {return d3.entries(d) })
-      .enter()
-        .append("td")
-        .attr("class", "data")
-    // .html(function (d, i) {console.warn(d); return d.value })
-    // .html(function (d, i) {console.warn(d); return typeof d.value === 'object' ? "foo" : d.value })
-        .html(function (d, i) { return typeof d.value === 'object' ? d.value.title != undefined ? d.value.title : d.value.last != undefined ? d.value.first + " " + d.value.last : d.value : d.value })
-        .style("left", function(d,i,j) {return (i * 100) + "px"});
 }
 
 function createBar(data, target, ajax) {
@@ -195,22 +144,12 @@ function createBar(data, target, ajax) {
         .on("mouseout", mouseOut);
 }
 
-var Table = React.createClass({
-	render() {
-		var data = this.props.data;
-		createSpreadsheet(data);
-	        return (
-	            <table id="spreadsheet" className="table">Something</table>
-	        );
-	    }
-});
-
 var Bar = React.createClass({
 	render() {
 		var data = this.props.data;
 		var ajax = this.props.ajax;
 
-		console.log(this.props.ajax);
+		// console.log(this.props.ajax);
 	    if (ajax != "loading...") {
 		    createBar(data, "#bar", ajax);
 		}
@@ -227,8 +166,6 @@ var Chart = React.createClass({
 
 			<Bar data={this.props.data} ajax={this.props.ajax} />
 			
-			<Table data={this.props.data} ajax={this.props.ajax} />
-
 			</div>
 		);
 	}

@@ -2,6 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Table = require('./parts/Table');
 var Chart = require('./parts/Chart');
+var Spreadsheet = require('./parts/Spreadsheet')
 
 function getURL(url, callback) {
   var req = new XMLHttpRequest();
@@ -48,6 +49,7 @@ var APP = React.createClass({
       this.serverRequest.abort();
     },
     render() {
+      console.warn("this.state");
       console.log(this.state);
         return (
             <div>
@@ -56,7 +58,7 @@ var APP = React.createClass({
                 </div>
 
                 <div>
-                    <Table data={this.state.books} />
+                    <Spreadsheet data={this.state.books} ajax={this.state.ajax} />
                 </div>
 
             </div>
