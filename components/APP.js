@@ -38,7 +38,7 @@ var APP = React.createClass({
     getInitialState: function() {
     return { 
       books: [], 
-      ajax: "loading..."
+      ajax: "loading...",
      };
     },
     componentDidMount: function() {
