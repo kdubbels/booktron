@@ -30,7 +30,7 @@ var APP = React.createClass({
       var parsed_content = JSON.parse(content);
       _this.setState({
         books: parsed_content,
-        ajax: "loaded"
+        ajax: true
       });
       console.log(parsed_content);
     });
@@ -38,7 +38,7 @@ var APP = React.createClass({
     getInitialState: function() {
     return { 
       books: [], 
-      ajax: "loading...",
+      ajax: false,
      };
     },
     componentDidMount: function() {

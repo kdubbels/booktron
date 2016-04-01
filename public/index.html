@@ -42,30 +42,28 @@
         th, td {
             padding: 15px;
         }
+.bar {
+  fill: steelblue;
+}
 
-        .bar {
-          fill: #fb887c;
-          stroke:white;
-        }
+.bar:hover {
+  fill: brown;
+}
 
-        .bar:hover {
-          fill: #fff;
-        }
+.axis {
+  font: 10px sans-serif;
+}
 
-        .axis {
-          font: 10px Helvetica;
-        }
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
 
-        .axis path,
-        .axis line {
-          fill: none;
-          stroke: #fff;
-          shape-rendering: crispEdges;
-        }
-
-        .x.axis path {
-          display: none;
-        }
+.x.axis path {
+  display: none;
+}
     </style>
 </head>
 <body>
