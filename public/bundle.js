@@ -30931,7 +30931,8 @@
 				obj.genre = genres[i];
 				book_data_array.push(obj);
 			}
-			return book_data_array;
+			console.log(book_data_array);
+			return _.sortBy(book_data_array, 'genre');
 		}
 	}
 
@@ -30954,7 +30955,7 @@
 				x.domain(data.map(function (d) {
 					return d.genre;
 				}));
-				d3.select(".x axis").attr("transform", "translate(5," + (height + 5) + ")").call(xAxis).selectAll("text").attr("transform", "rotate(45)").style("text-anchor", "start");
+				d3.select(".x").attr("transform", "translate(5," + (height + 5) + ")").call(xAxis).selectAll("text").attr("transform", "rotate(45)").style("text-anchor", "start");
 			}
 
 			return React.createElement('g', { className: 'x axis' });
@@ -30968,7 +30969,7 @@
 			var ajax = this.props.ajax;
 			if (ajax == true) {
 				var data = formatBarData(this.props.books.books, ajax);
-
+				// var data = _.sortBy(formatBarData(this.props.books.books, ajax), 'genre');
 				var y = d3.scale.linear().range([height, 0]);
 				var yAxis = d3.svg.axis().scale(y).orient("left").ticks(10);
 
@@ -30976,14 +30977,7 @@
 					return d.count;
 				})]);
 
-				d3.select(".y axis").append("circle").attr("class", "foobar");
-				//   .call(yAxis)
-				// .append("text")
-				//   .attr("transform", "rotate(-90)")
-				//   .attr("y", 6)
-				//   .attr("dy", ".71em")
-				//   .style("text-anchor", "end")
-				//   .text("Count");
+				d3.select(".y").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("Count");
 			}
 
 			return React.createElement('g', { className: 'y axis' });
@@ -30994,12 +30988,11 @@
 		displayName: 'Rect',
 
 		handleChildClick: function (genre) {
-			console.warn(this);
+			console.warn("<Rect /> this");
+			console.log(this);
 			this.props.onClick(this);
 		},
 		render() {
-			console.warn(this);
-
 			return React.createElement('rect', { onClick: this.handleChildClick, className: 'bar', height: this.props.height, width: this.props.width, x: this.props.x, y: this.props.y });
 		}
 	});
@@ -31013,8 +31006,6 @@
 			};
 		},
 		render() {
-			console.log("the this for <Rects />");
-			console.log(this);
 			var ajax = this.props.ajax;
 			var handleChildClick = this.handleChildClick;
 
@@ -31046,7 +31037,8 @@
 			);
 		},
 		handleChildClick: function (genre) {
-			console.warn(this);
+			console.warn("this of <Rects />");
+			console.log(this);
 			this.setState({
 				selectedGenre: genre.props.genre
 			});
