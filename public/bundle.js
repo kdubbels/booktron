@@ -30968,7 +30968,7 @@
 			var ajax = this.props.ajax;
 			if (ajax == true) {
 				var data = formatBarData(this.props.books.books, ajax);
-				console.warn(data);
+
 				var y = d3.scale.linear().range([height, 0]);
 				var yAxis = d3.svg.axis().scale(y).orient("left").ticks(10);
 
@@ -30993,23 +30993,30 @@
 	var Rect = React.createClass({
 		displayName: 'Rect',
 
-		handleClick: function (event) {
+		handleChildClick: function (genre) {
 			console.warn(this);
+			this.props.onClick(this);
 		},
 		render() {
+			console.warn(this);
 
-			return React.createElement('rect', { onClick: this.handleClick, className: 'bar', height: this.props.height, width: this.props.width, x: this.props.x, y: this.props.y });
+			return React.createElement('rect', { onClick: this.handleChildClick, className: 'bar', height: this.props.height, width: this.props.width, x: this.props.x, y: this.props.y });
 		}
 	});
 
 	var Rects = React.createClass({
 		displayName: 'Rects',
 
-		handleClick: function (event) {
-			console.warn(this);
+		getInitialState: function () {
+			return {
+				selectedGenre: ""
+			};
 		},
 		render() {
+			console.log("the this for <Rects />");
+			console.log(this);
 			var ajax = this.props.ajax;
+			var handleChildClick = this.handleChildClick;
 
 			var x = d3.scale.ordinal().rangeRoundBands([0, width], .1);
 
@@ -31034,9 +31041,15 @@
 				'g',
 				null,
 				data.map(function (datum, index) {
-					return React.createElement(Rect, { onClick: this.handleClick, key: index, x: x(datum.genre), y: y(datum.count), width: x.rangeBand(), height: height - y(datum.count), genre: datum.genre, count: datum.count });
+					return React.createElement(Rect, { onClick: handleChildClick, key: index, x: x(datum.genre), y: y(datum.count), width: x.rangeBand(), height: height - y(datum.count), genre: datum.genre, count: datum.count });
 				})
 			);
+		},
+		handleChildClick: function (genre) {
+			console.warn(this);
+			this.setState({
+				selectedGenre: genre.props.genre
+			});
 		}
 	});
 
@@ -31075,7 +31088,7 @@
 		render: function () {
 			return React.createElement(
 				'div',
-				{ onMouseOver: this.props.onMouseOver, onMouseOut: this.props.onMouseOut },
+				{ onClick: this.props.onClick },
 				this.props.text
 			);
 		}
@@ -31095,33 +31108,28 @@
 			return React.createElement(
 				'div',
 				null,
-				React.createElement(Child, { onMouseOver: this.handleChildMouseOver, onMouseOut: this.handleChildMouseOut, text: this.state.childText }),
+				React.createElement(Child, { onClick: this.handleChildClick, text: this.state.childText }),
 				React.createElement(Bar, { books: this.props.books, ajax: this.props.ajax })
 			);
 		},
-		handleChildMouseOver: function (event) {
+		handleChildClick: function (event) {
 			// You can access the prop you pass to the children
 			// because you already have it!
 			// Here you have it in state but it could also be
 			//  in props, coming from another parent.
-			console.warn("The Child button text is: " + this.state.childText);
+			console.log("The Child button text is: " + this.state.childText);
 			// You can also access the target of the click here
 			// if you want to do some magic stuff
-			console.warn("The Child HTML is: " + event.target.outerHTML);
+			console.log("The Child HTML is: " + event.target.outerHTML);
+			console.warn(this);
 			this.setState({
 				foo: "bar",
 				childText: "Hello world",
 				filter: "You now have filtered data"
 			});
-		},
-		handleChildMouseOut: function (event) {
-			this.setState({
-				foo: "baz",
-				childText: "Goodbye world",
-				filter: ""
-			});
 		}
 	});
+
 	var BarChart = React.createClass({
 		displayName: 'BarChart',
 
